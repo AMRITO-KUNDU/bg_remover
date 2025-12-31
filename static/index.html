@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Background Remover</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+        }
+        img {
+            max-width: 400px;
+            margin-top: 20px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Simple Background Remover</h2>
+
+<input type="file" id="fileInput">
+<button onclick="removeBg()">Remove Background</button>
+
+<img id="output">
+
+<script>
+async function removeBg() {
+    const fileInput = document.getElementById("fileInput");
+    if (!fileInput.files.length) {
+        alert("Select an image first");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", fileInput.files[0]);
+
+    const response = await fetch("/remove-bg", {
+        method: "POST",
+        body: formData
+    });
+
+    const blob = await response.blob();
+    document.getElementById("output").src = URL.createObjectURL(blob);
+}
+</script>
+
+</body>
+</html>
