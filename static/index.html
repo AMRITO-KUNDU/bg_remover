@@ -1,20 +1,71 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Background Remover</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 40px; }
-        img { max-width: 400px; margin-top: 20px; display: block; }
-    </style>
+<meta charset="UTF-8">
+<title>Background Remover</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+    }
+    h2 {
+        color: #333;
+    }
+    .container {
+        background: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        text-align: center;
+        width: 400px;
+    }
+    input[type="file"] {
+        margin: 20px 0;
+    }
+    button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #0056b3;
+    }
+    img {
+        margin-top: 20px;
+        max-width: 100%;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+    }
+    .footer {
+        margin-top: 20px;
+        font-size: 12px;
+        color: #666;
+    }
+</style>
 </head>
 <body>
 
-<h2>Simple Background Remover</h2>
+<div class="container">
+    <h2>Background Remover</h2>
+    <input type="file" id="fileInput">
+    <br>
+    <button onclick="removeBg()">Remove Background</button>
+    <img id="output" alt="Result will appear here">
+</div>
 
-<input type="file" id="fileInput">
-<button onclick="removeBg()">Remove Background</button>
-
-<img id="output">
+<div class="footer">
+    Powered by FastAPI & Rembg
+</div>
 
 <script>
 async function removeBg() {
@@ -31,6 +82,11 @@ async function removeBg() {
         method: "POST",
         body: formData
     });
+
+    if (!response.ok) {
+        alert("Failed to remove background.");
+        return;
+    }
 
     const blob = await response.blob();
     document.getElementById("output").src = URL.createObjectURL(blob);
