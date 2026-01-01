@@ -3,93 +3,265 @@
 <head>
 <meta charset="UTF-8">
 <title>Background Remover</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f2f2f2;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        margin: 0;
-    }
-    h2 {
-        color: #333;
-    }
-    .container {
-        background: #fff;
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        text-align: center;
-        width: 400px;
-    }
-    input[type="file"] {
-        margin: 20px 0;
-    }
-    button {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        font-size: 16px;
-        border-radius: 6px;
-        cursor: pointer;
-    }
-    button:hover {
-        background-color: #0056b3;
-    }
-    img {
-        margin-top: 20px;
-        max-width: 100%;
-        border-radius: 8px;
-        border: 1px solid #ddd;
-    }
-    .footer {
-        margin-top: 20px;
-        font-size: 12px;
-        color: #666;
-    }
+:root {
+    --primary: #4f46e5;
+    --primary-dark: #4338ca;
+    --success: #16a34a;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --text: #0f172a;
+    --muted: #64748b;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: system-ui, sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.app {
+    width: 100%;
+    max-width: 440px;
+    background: var(--card);
+    padding: 28px;
+    border-radius: 18px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 22px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 22px;
+}
+
+.header p {
+    margin-top: 6px;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.action-block {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* UPLOAD BOX */
+.upload-box {
+    position: relative;
+    border: 2px dashed #c7d2fe;
+    border-radius: 16px;
+    padding: 32px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.upload-box.selected {
+    border-color: var(--success);
+    background: #f0fdf4;
+}
+
+.upload-box input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.upload-title {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.upload-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 6px;
+}
+
+.file-name {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--success);
+    display: none;
+}
+
+/* BUTTON */
+.primary-btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    border-radius: 14px;
+    border: none;
+    background: var(--primary);
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.primary-btn:disabled {
+    background: #a5b4fc;
+    cursor: not-allowed;
+}
+
+/* LOADER */
+.spinner {
+    width: 34px;
+    height: 34px;
+    margin: 22px auto;
+    border: 3px solid #e5e7eb;
+    border-top: 3px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+    display: none;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* RESULT */
+.preview {
+    display: none;
+    margin-top: 20px;
+}
+
+.preview img {
+    width: 100%;
+    border-radius: 14px;
+    border: 1px solid #e5e7eb;
+}
+
+.actions {
+    display: none;
+    margin-top: 14px;
+    text-align: center;
+}
+
+.download {
+    padding: 12px 20px;
+    border-radius: 14px;
+    background: var(--success);
+    color: white;
+    text-decoration: none;
+    font-size: 15px;
+}
+
+.footer {
+    margin-top: 18px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+}
 </style>
 </head>
+
 <body>
 
-<div class="container">
-    <h2>Background Remover</h2>
-    <input type="file" id="fileInput">
-    <br>
-    <button onclick="removeBg()">Remove Background</button>
-    <img id="output" alt="Result will appear here">
-</div>
+<div class="app">
 
-<div class="footer">
-    Powered by FastAPI & Rembg
+    <div class="header">
+        <h1>Background Remover</h1>
+        <p>Select an image and remove its background</p>
+    </div>
+
+    <div class="action-block">
+        <div id="uploadBox" class="upload-box">
+            <input type="file" id="fileInput" accept="image/*">
+            <div class="upload-title" id="uploadTitle">Click to upload image</div>
+            <div class="upload-sub">PNG or JPG</div>
+            <div class="file-name" id="fileName"></div>
+        </div>
+
+        <button id="removeBtn" class="primary-btn" disabled onclick="removeBg()">
+            Remove Background
+        </button>
+    </div>
+
+    <div id="spinner" class="spinner"></div>
+
+    <div id="preview" class="preview">
+        <img id="output">
+    </div>
+
+    <div id="actions" class="actions">
+        <a id="downloadLink" class="download" download="background-removed.png">
+            Download PNG
+        </a>
+    </div>
+
+    <div class="footer">FastAPI · rembg</div>
+
 </div>
 
 <script>
-async function removeBg() {
-    const fileInput = document.getElementById("fileInput");
-    if (!fileInput.files.length) {
-        alert("Select an image first");
-        return;
+const fileInput = document.getElementById("fileInput");
+const uploadBox = document.getElementById("uploadBox");
+const uploadTitle = document.getElementById("uploadTitle");
+const fileNameText = document.getElementById("fileName");
+const removeBtn = document.getElementById("removeBtn");
+
+fileInput.addEventListener("change", () => {
+    if (fileInput.files.length) {
+        uploadBox.classList.add("selected");
+        uploadTitle.textContent = "Image selected";
+        fileNameText.textContent = fileInput.files[0].name;
+        fileNameText.style.display = "block";
+        removeBtn.disabled = false;
     }
+});
+
+async function removeBg() {
+    const spinner = document.getElementById("spinner");
+    const preview = document.getElementById("preview");
+    const output = document.getElementById("output");
+    const actions = document.getElementById("actions");
+    const download = document.getElementById("downloadLink");
+
+    removeBtn.disabled = true;
+    spinner.style.display = "block";
+    preview.style.display = "none";
+    actions.style.display = "none";
 
     const formData = new FormData();
     formData.append("file", fileInput.files[0]);
 
-    const response = await fetch("/remove-bg", {
-        method: "POST",
-        body: formData
-    });
+    try {
+        const res = await fetch("/remove-bg", {
+            method: "POST",
+            body: formData
+        });
 
-    if (!response.ok) {
-        alert("Failed to remove background.");
-        return;
+        if (!res.ok) throw new Error();
+
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+
+        output.src = url;
+        preview.style.display = "block";
+        download.href = url;
+        actions.style.display = "block";
+
+    } catch {
+        alert("Processing failed");
+    } finally {
+        spinner.style.display = "none";
+        removeBtn.disabled = false;
     }
-
-    const blob = await response.blob();
-    document.getElementById("output").src = URL.createObjectURL(blob);
 }
 </script>
 
