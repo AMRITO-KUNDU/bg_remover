@@ -22,6 +22,8 @@ A small web app to remove image backgrounds using FastAPI and rembg.
 ## Deployment
 ### Render
 Render will detect the `Procfile` and run gunicorn with uvicorn workers.
+Pinned Python version is in `runtime.txt`.
+Free tier instances are memory constrained; `Procfile` uses 1 worker to reduce startup latency.
 
 ### Docker
 Build and run:
