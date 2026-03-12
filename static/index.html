@@ -12,63 +12,119 @@
     --primary-dark: #4338ca;
     --success: #16a34a;
     --danger: #dc2626;
-    --bg: #f8fafc;
+    --bg: #f1f5f9;
     --card: #ffffff;
     --text: #0f172a;
     --muted: #64748b;
 }
 
-* { box-sizing: border-box; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-    margin: 0;
     font-family: system-ui, sans-serif;
     background: var(--bg);
     min-height: 100vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding: 24px 16px;
+    overflow-x: hidden;
 }
 
+/* ── Animated background orbs ── */
+.orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.35;
+    pointer-events: none;
+    animation: drift 12s ease-in-out infinite alternate;
+}
+.orb-1 { width: 340px; height: 340px; background: #818cf8; top: -80px; left: -80px; animation-delay: 0s; }
+.orb-2 { width: 280px; height: 280px; background: #34d399; bottom: -60px; right: -60px; animation-delay: -4s; }
+.orb-3 { width: 200px; height: 200px; background: #f472b6; top: 40%; left: 60%; animation-delay: -8s; }
+
+@keyframes drift {
+    from { transform: translate(0, 0) scale(1); }
+    to   { transform: translate(30px, 20px) scale(1.08); }
+}
+
+/* ── Card ── */
 .app {
+    position: relative;
     width: 100%;
-    max-width: 440px;
+    max-width: 460px;
     background: var(--card);
-    padding: 28px;
-    border-radius: 18px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    padding: 32px 28px 28px;
+    border-radius: 24px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.10);
+    animation: slideUp 0.55s cubic-bezier(0.22,1,0.36,1) both;
 }
 
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(32px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Header ── */
 .header {
     text-align: center;
-    margin-bottom: 22px;
+    margin-bottom: 26px;
+}
+
+.header-icon {
+    font-size: 44px;
+    display: block;
+    margin-bottom: 10px;
+    animation: iconBounce 2.4s ease-in-out infinite;
+    transform-origin: bottom center;
+}
+
+@keyframes iconBounce {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50%       { transform: translateY(-7px) rotate(3deg); }
 }
 
 .header h1 {
-    margin: 0;
-    font-size: 22px;
+    font-size: 26px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed, #ec4899);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradShift 4s ease infinite;
+    letter-spacing: -0.5px;
+}
+
+@keyframes gradShift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 .header p {
-    margin-top: 6px;
+    margin-top: 8px;
     font-size: 14px;
     color: var(--muted);
 }
 
+/* ── Upload ── */
 .action-block {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
 }
 
 .upload-box {
     position: relative;
     border: 2px dashed #c7d2fe;
     border-radius: 16px;
-    padding: 20px;
+    padding: 24px 20px;
     text-align: center;
     cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
+    transition: border-color 0.2s, background 0.2s, transform 0.2s;
     min-height: 110px;
     display: flex;
     flex-direction: column;
@@ -77,9 +133,12 @@ body {
     gap: 6px;
 }
 
+.upload-box:hover { transform: scale(1.01); }
+
 .upload-box.drag-over {
     border-color: var(--primary);
     background: #eef2ff;
+    transform: scale(1.02);
 }
 
 .upload-box.selected {
@@ -95,15 +154,10 @@ body {
     cursor: pointer;
 }
 
-.upload-title {
-    font-size: 16px;
-    font-weight: 600;
-}
+.upload-icon { font-size: 28px; }
 
-.upload-sub {
-    font-size: 13px;
-    color: var(--muted);
-}
+.upload-title { font-size: 15px; font-weight: 600; color: var(--text); }
+.upload-sub   { font-size: 13px; color: var(--muted); }
 
 .thumb {
     display: none;
@@ -114,42 +168,55 @@ body {
     pointer-events: none;
 }
 
-.upload-box.selected .thumb { display: block; }
-.upload-box.selected .upload-title { font-size: 13px; color: var(--success); }
-.upload-box.selected .upload-sub { display: none; }
+.upload-box.selected .thumb       { display: block; }
+.upload-box.selected .upload-icon { display: none; }
+.upload-box.selected .upload-title { font-size: 13px; color: var(--success); margin-top: 4px; }
+.upload-box.selected .upload-sub  { display: none; }
 
+/* ── Button ── */
 .primary-btn {
     width: 100%;
     padding: 14px;
     font-size: 16px;
+    font-weight: 600;
     border-radius: 14px;
     border: none;
-    background: var(--primary);
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
     color: white;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 4px 18px rgba(79,70,229,0.35);
 }
 
-.primary-btn:hover:not(:disabled) { background: var(--primary-dark); }
+.primary-btn:hover:not(:disabled) {
+    opacity: 0.92;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 22px rgba(79,70,229,0.45);
+}
+
+.primary-btn:active:not(:disabled) { transform: translateY(0); }
 
 .primary-btn:disabled {
-    background: #a5b4fc;
+    background: linear-gradient(135deg, #a5b4fc, #c4b5fd);
+    box-shadow: none;
     cursor: not-allowed;
 }
 
+/* ── Spinner ── */
 .spinner {
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     margin: 22px auto;
     border: 3px solid #e5e7eb;
     border-top: 3px solid var(--primary);
     border-radius: 50%;
-    animation: spin 0.9s linear infinite;
+    animation: spin 0.85s linear infinite;
     display: none;
 }
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
+/* ── Error ── */
 .error-msg {
     display: none;
     margin-top: 14px;
@@ -159,12 +226,11 @@ body {
     color: var(--danger);
     font-size: 14px;
     text-align: center;
+    animation: fadeIn 0.3s ease;
 }
 
-.preview {
-    display: none;
-    margin-top: 20px;
-}
+/* ── Result ── */
+.preview { display: none; margin-top: 20px; animation: fadeIn 0.4s ease; }
 
 .preview img {
     width: 100%;
@@ -173,42 +239,89 @@ body {
     background: repeating-conic-gradient(#e5e7eb 0% 25%, #fff 0% 50%) 0 0 / 16px 16px;
 }
 
-.actions {
-    display: none;
-    margin-top: 14px;
-    text-align: center;
-}
+.actions { display: none; margin-top: 12px; text-align: center; animation: fadeIn 0.4s ease; }
 
 .download {
     display: inline-block;
     padding: 12px 28px;
     border-radius: 14px;
-    background: var(--success);
+    background: linear-gradient(135deg, #16a34a, #15803d);
     color: white;
     text-decoration: none;
     font-size: 15px;
+    font-weight: 600;
+    box-shadow: 0 4px 14px rgba(22,163,74,0.35);
+    transition: opacity 0.2s, transform 0.15s;
 }
 
-.footer {
-    margin-top: 18px;
+.download:hover { opacity: 0.9; transform: translateY(-1px); }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── Feature pills ── */
+.features {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+    animation: slideUp 0.65s cubic-bezier(0.22,1,0.36,1) 0.15s both;
+}
+
+.feat {
+    flex: 1;
+    background: var(--card);
+    border-radius: 16px;
+    padding: 14px 10px;
     text-align: center;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.07);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.feat:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.11);
+}
+
+.feat-icon {
+    font-size: 22px;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.feat-title {
     font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+    display: block;
+    margin-bottom: 3px;
+}
+
+.feat-desc {
+    font-size: 11px;
     color: var(--muted);
+    line-height: 1.4;
+    display: block;
 }
 </style>
 </head>
 
 <body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
 <div class="app">
 
     <div class="header">
+        <span class="header-icon">✂️</span>
         <h1>Background Remover</h1>
-        <p>Select or drop an image to remove its background</p>
+        <p>Drop any image — AI removes the background instantly</p>
     </div>
 
     <div class="action-block">
         <div id="uploadBox" class="upload-box">
             <input type="file" id="fileInput" accept="image/*">
+            <span class="upload-icon">🖼️</span>
             <img id="thumb" class="thumb" alt="preview">
             <div class="upload-title" id="uploadTitle">Click or drop image here</div>
             <div class="upload-sub">PNG, JPG, WebP &mdash; max 10 MB</div>
@@ -227,11 +340,27 @@ body {
     </div>
 
     <div id="actions" class="actions">
-        <a id="downloadLink" class="download">Download PNG</a>
+        <a id="downloadLink" class="download">⬇ Download PNG</a>
     </div>
 
-    <div class="footer">FastAPI &middot; rembg</div>
+</div>
 
+<div class="features">
+    <div class="feat">
+        <span class="feat-icon">🧠</span>
+        <span class="feat-title">AI Powered</span>
+        <span class="feat-desc">U2Net neural network, runs fully on-server</span>
+    </div>
+    <div class="feat">
+        <span class="feat-icon">⚡</span>
+        <span class="feat-title">Instant Cache</span>
+        <span class="feat-desc">Same image? Zero reprocessing, instant result</span>
+    </div>
+    <div class="feat">
+        <span class="feat-icon">🔒</span>
+        <span class="feat-title">Private</span>
+        <span class="feat-desc">Images are never saved to disk or shared</span>
+    </div>
 </div>
 
 <script>
@@ -248,7 +377,6 @@ function setFile(file) {
     uploadTitle.textContent = file.name;
     removeBtn.disabled = false;
     hideError();
-
     const reader = new FileReader();
     reader.onload = e => { thumb.src = e.target.result; };
     reader.readAsDataURL(file);
@@ -258,10 +386,7 @@ fileInput.addEventListener("change", () => {
     if (fileInput.files.length) setFile(fileInput.files[0]);
 });
 
-uploadBox.addEventListener("dragover", e => {
-    e.preventDefault();
-    uploadBox.classList.add("drag-over");
-});
+uploadBox.addEventListener("dragover", e => { e.preventDefault(); uploadBox.classList.add("drag-over"); });
 uploadBox.addEventListener("dragleave", () => uploadBox.classList.remove("drag-over"));
 uploadBox.addEventListener("drop", e => {
     e.preventDefault();
@@ -270,14 +395,8 @@ uploadBox.addEventListener("drop", e => {
     if (file) setFile(file);
 });
 
-function showError(msg) {
-    errorMsg.textContent = msg;
-    errorMsg.style.display = "block";
-}
-
-function hideError() {
-    errorMsg.style.display = "none";
-}
+function showError(msg) { errorMsg.textContent = msg; errorMsg.style.display = "block"; }
+function hideError()    { errorMsg.style.display = "none"; }
 
 async function removeBg() {
     const spinner  = document.getElementById("spinner");
