@@ -12,10 +12,11 @@
     --primary-dark: #4338ca;
     --success: #16a34a;
     --danger: #dc2626;
-    --bg: #f1f5f9;
+    --bg: #f8fafc;
     --card: #ffffff;
     --text: #0f172a;
     --muted: #64748b;
+    --border: #e2e8f0;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -29,84 +30,53 @@ body {
     align-items: center;
     justify-content: center;
     padding: 24px 16px;
-    overflow-x: hidden;
 }
 
-/* ── Animated background orbs ── */
-.orb {
-    position: fixed;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.35;
-    pointer-events: none;
-    animation: drift 12s ease-in-out infinite alternate;
-}
-.orb-1 { width: 340px; height: 340px; background: #818cf8; top: -80px; left: -80px; animation-delay: 0s; }
-.orb-2 { width: 280px; height: 280px; background: #34d399; bottom: -60px; right: -60px; animation-delay: -4s; }
-.orb-3 { width: 200px; height: 200px; background: #f472b6; top: 40%; left: 60%; animation-delay: -8s; }
-
-@keyframes drift {
-    from { transform: translate(0, 0) scale(1); }
-    to   { transform: translate(30px, 20px) scale(1.08); }
-}
-
-/* ── Card ── */
 .app {
-    position: relative;
     width: 100%;
-    max-width: 460px;
+    max-width: 440px;
     background: var(--card);
     padding: 32px 28px 28px;
-    border-radius: 24px;
-    box-shadow: 0 24px 60px rgba(0,0,0,0.10);
-    animation: slideUp 0.55s cubic-bezier(0.22,1,0.36,1) both;
+    border-radius: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 32px rgba(0,0,0,0.08);
+    animation: fadeUp 0.4s ease both;
 }
 
-@keyframes slideUp {
-    from { opacity: 0; transform: translateY(32px); }
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
     to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ── Header ── */
 .header {
     text-align: center;
-    margin-bottom: 26px;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
 }
 
 .header-icon {
-    font-size: 44px;
+    font-size: 32px;
     display: block;
     margin-bottom: 10px;
-    animation: iconBounce 2.4s ease-in-out infinite;
-    transform-origin: bottom center;
+    animation: gentlePulse 3s ease-in-out infinite;
 }
 
-@keyframes iconBounce {
-    0%, 100% { transform: translateY(0) rotate(-3deg); }
-    50%       { transform: translateY(-7px) rotate(3deg); }
+@keyframes gentlePulse {
+    0%, 100% { transform: scale(1); }
+    50%       { transform: scale(1.06); }
 }
 
 .header h1 {
-    font-size: 26px;
-    font-weight: 800;
-    background: linear-gradient(135deg, #4f46e5, #7c3aed, #ec4899);
-    background-size: 200% 200%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: gradShift 4s ease infinite;
-    letter-spacing: -0.5px;
-}
-
-@keyframes gradShift {
-    0%   { background-position: 0% 50%; }
-    50%  { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.3px;
 }
 
 .header p {
-    margin-top: 8px;
-    font-size: 14px;
+    margin-top: 6px;
+    font-size: 13px;
     color: var(--muted);
 }
 
@@ -119,12 +89,12 @@ body {
 
 .upload-box {
     position: relative;
-    border: 2px dashed #c7d2fe;
-    border-radius: 16px;
-    padding: 24px 20px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 14px;
+    padding: 28px 20px;
     text-align: center;
     cursor: pointer;
-    transition: border-color 0.2s, background 0.2s, transform 0.2s;
+    transition: border-color 0.2s, background 0.2s;
     min-height: 110px;
     display: flex;
     flex-direction: column;
@@ -133,12 +103,11 @@ body {
     gap: 6px;
 }
 
-.upload-box:hover { transform: scale(1.01); }
+.upload-box:hover { border-color: #94a3b8; }
 
 .upload-box.drag-over {
     border-color: var(--primary);
-    background: #eef2ff;
-    transform: scale(1.02);
+    background: #f5f3ff;
 }
 
 .upload-box.selected {
@@ -154,10 +123,10 @@ body {
     cursor: pointer;
 }
 
-.upload-icon { font-size: 28px; }
+.upload-icon { font-size: 24px; color: var(--muted); }
 
-.upload-title { font-size: 15px; font-weight: 600; color: var(--text); }
-.upload-sub   { font-size: 13px; color: var(--muted); }
+.upload-title { font-size: 14px; font-weight: 600; color: var(--text); }
+.upload-sub   { font-size: 12px; color: var(--muted); }
 
 .thumb {
     display: none;
@@ -168,47 +137,44 @@ body {
     pointer-events: none;
 }
 
-.upload-box.selected .thumb       { display: block; }
-.upload-box.selected .upload-icon { display: none; }
-.upload-box.selected .upload-title { font-size: 13px; color: var(--success); margin-top: 4px; }
-.upload-box.selected .upload-sub  { display: none; }
+.upload-box.selected .thumb        { display: block; }
+.upload-box.selected .upload-icon  { display: none; }
+.upload-box.selected .upload-title { font-size: 12px; color: var(--success); margin-top: 4px; }
+.upload-box.selected .upload-sub   { display: none; }
 
 /* ── Button ── */
 .primary-btn {
     width: 100%;
-    padding: 14px;
-    font-size: 16px;
+    padding: 13px;
+    font-size: 15px;
     font-weight: 600;
-    border-radius: 14px;
+    border-radius: 12px;
     border: none;
-    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    background: var(--primary);
     color: white;
     cursor: pointer;
-    transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
-    box-shadow: 0 4px 18px rgba(79,70,229,0.35);
+    transition: background 0.2s, transform 0.15s;
 }
 
 .primary-btn:hover:not(:disabled) {
-    opacity: 0.92;
+    background: var(--primary-dark);
     transform: translateY(-1px);
-    box-shadow: 0 6px 22px rgba(79,70,229,0.45);
 }
 
 .primary-btn:active:not(:disabled) { transform: translateY(0); }
 
 .primary-btn:disabled {
-    background: linear-gradient(135deg, #a5b4fc, #c4b5fd);
-    box-shadow: none;
+    background: #c7d2fe;
     cursor: not-allowed;
 }
 
 /* ── Spinner ── */
 .spinner {
-    width: 36px;
-    height: 36px;
-    margin: 22px auto;
-    border: 3px solid #e5e7eb;
-    border-top: 3px solid var(--primary);
+    width: 32px;
+    height: 32px;
+    margin: 20px auto;
+    border: 2px solid #e2e8f0;
+    border-top: 2px solid var(--primary);
     border-radius: 50%;
     animation: spin 0.85s linear infinite;
     display: none;
@@ -219,109 +185,79 @@ body {
 /* ── Error ── */
 .error-msg {
     display: none;
-    margin-top: 14px;
-    padding: 12px 16px;
-    border-radius: 12px;
+    margin-top: 12px;
+    padding: 11px 14px;
+    border-radius: 10px;
     background: #fef2f2;
     color: var(--danger);
-    font-size: 14px;
+    font-size: 13px;
     text-align: center;
-    animation: fadeIn 0.3s ease;
 }
 
 /* ── Result ── */
-.preview { display: none; margin-top: 20px; animation: fadeIn 0.4s ease; }
+.preview { display: none; margin-top: 18px; }
 
 .preview img {
     width: 100%;
-    border-radius: 14px;
-    border: 1px solid #e5e7eb;
-    background: repeating-conic-gradient(#e5e7eb 0% 25%, #fff 0% 50%) 0 0 / 16px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: repeating-conic-gradient(#e2e8f0 0% 25%, #fff 0% 50%) 0 0 / 14px 14px;
 }
 
-.actions { display: none; margin-top: 12px; text-align: center; animation: fadeIn 0.4s ease; }
+.actions { display: none; margin-top: 12px; text-align: center; }
 
 .download {
     display: inline-block;
-    padding: 12px 28px;
-    border-radius: 14px;
-    background: linear-gradient(135deg, #16a34a, #15803d);
+    padding: 11px 26px;
+    border-radius: 12px;
+    background: var(--success);
     color: white;
     text-decoration: none;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
-    box-shadow: 0 4px 14px rgba(22,163,74,0.35);
-    transition: opacity 0.2s, transform 0.15s;
+    transition: background 0.2s;
 }
 
-.download:hover { opacity: 0.9; transform: translateY(-1px); }
+.download:hover { background: #15803d; }
 
-@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-
-/* ── Feature pills ── */
+/* ── Feature cards ── */
 .features {
     display: flex;
     gap: 10px;
-    margin-top: 24px;
-    animation: slideUp 0.65s cubic-bezier(0.22,1,0.36,1) 0.15s both;
+    margin-top: 16px;
+    width: 100%;
+    max-width: 440px;
+    animation: fadeUp 0.4s 0.12s ease both;
 }
 
 .feat {
     flex: 1;
     background: var(--card);
-    border-radius: 16px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
     padding: 14px 10px;
     text-align: center;
-    box-shadow: 0 4px 18px rgba(0,0,0,0.07);
-    transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.feat:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.11);
-}
-
-.feat-icon {
-    font-size: 22px;
-    display: block;
-    margin-bottom: 6px;
-}
-
-.feat-title {
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--text);
-    display: block;
-    margin-bottom: 3px;
-}
-
-.feat-desc {
-    font-size: 11px;
-    color: var(--muted);
-    line-height: 1.4;
-    display: block;
-}
+.feat-icon  { font-size: 18px; display: block; margin-bottom: 5px; }
+.feat-title { font-size: 11px; font-weight: 700; color: var(--text); display: block; margin-bottom: 3px; }
+.feat-desc  { font-size: 11px; color: var(--muted); line-height: 1.4; display: block; }
 </style>
 </head>
 
 <body>
 
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
-<div class="orb orb-3"></div>
-
 <div class="app">
-
     <div class="header">
         <span class="header-icon">✂️</span>
         <h1>Background Remover</h1>
-        <p>Drop any image — AI removes the background instantly</p>
+        <p>Upload an image and get a clean transparent PNG</p>
     </div>
 
     <div class="action-block">
         <div id="uploadBox" class="upload-box">
             <input type="file" id="fileInput" accept="image/*">
-            <span class="upload-icon">🖼️</span>
+            <span class="upload-icon">🖼</span>
             <img id="thumb" class="thumb" alt="preview">
             <div class="upload-title" id="uploadTitle">Click or drop image here</div>
             <div class="upload-sub">PNG, JPG, WebP &mdash; max 10 MB</div>
@@ -340,26 +276,25 @@ body {
     </div>
 
     <div id="actions" class="actions">
-        <a id="downloadLink" class="download">⬇ Download PNG</a>
+        <a id="downloadLink" class="download">Download PNG</a>
     </div>
-
 </div>
 
 <div class="features">
     <div class="feat">
         <span class="feat-icon">🧠</span>
         <span class="feat-title">AI Powered</span>
-        <span class="feat-desc">U2Net neural network, runs fully on-server</span>
+        <span class="feat-desc">U2Net model, runs fully on-server</span>
     </div>
     <div class="feat">
         <span class="feat-icon">⚡</span>
         <span class="feat-title">Instant Cache</span>
-        <span class="feat-desc">Same image? Zero reprocessing, instant result</span>
+        <span class="feat-desc">Same image returned instantly</span>
     </div>
     <div class="feat">
         <span class="feat-icon">🔒</span>
         <span class="feat-title">Private</span>
-        <span class="feat-desc">Images are never saved to disk or shared</span>
+        <span class="feat-desc">Never saved to disk or shared</span>
     </div>
 </div>
 
