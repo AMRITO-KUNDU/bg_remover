@@ -12,6 +12,6 @@ COPY app ./app
 COPY static ./static
 COPY run.py .
 
-EXPOSE 8000
+EXPOSE 7860
 
-CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "app.main:app", "--bind", "0.0.0.0:8000", "--workers", "2", "--timeout", "120"]
+CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "app.main:app", "--bind", "0.0.0.0:7860", "--workers", "1", "--timeout", "120"]
