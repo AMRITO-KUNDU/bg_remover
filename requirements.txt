@@ -5,3 +5,10 @@ rembg
 pillow
 onnxruntime
 python-multipart
+fastapi
+gunicorn
+onnxruntime
+pillow
+python-multipart
+rembg
+uvicorn
