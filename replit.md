@@ -16,7 +16,6 @@ app/
   bg_remove.py  - Image processing with rembg
 static/
   index.html    - Single-page frontend UI
-  favicon.ico
 run.py          - Development server entrypoint (uvicorn, port 5000, 0.0.0.0)
 requirements.txt
 ```

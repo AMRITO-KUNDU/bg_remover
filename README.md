@@ -1,3 +1,13 @@
+---
+title: Simple Background Remover
+emoji: 🖼️
+colorFrom: indigo
+colorTo: purple
+sdk: docker
+sdk_version: "latest"
+pinned: false
+---
+
 # Simple Background Remover
 
 A small web app to remove image backgrounds using FastAPI and rembg.
