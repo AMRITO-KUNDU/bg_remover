@@ -6,12 +6,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="/static/favicon.ico">
 
-
 <style>
 :root {
     --primary: #4f46e5;
     --primary-dark: #4338ca;
     --success: #16a34a;
+    --danger: #dc2626;
     --bg: #f8fafc;
     --card: #ffffff;
     --text: #0f172a;
@@ -61,20 +61,31 @@ body {
     gap: 14px;
 }
 
-/* UPLOAD BOX */
 .upload-box {
     position: relative;
     border: 2px dashed #c7d2fe;
     border-radius: 16px;
-    padding: 32px 20px;
+    padding: 20px;
     text-align: center;
     cursor: pointer;
-    transition: 0.2s;
+    transition: border-color 0.2s, background 0.2s;
+    min-height: 110px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.upload-box.drag-over {
+    border-color: var(--primary);
+    background: #eef2ff;
 }
 
 .upload-box.selected {
     border-color: var(--success);
     background: #f0fdf4;
+    padding: 12px;
 }
 
 .upload-box input {
@@ -92,17 +103,21 @@ body {
 .upload-sub {
     font-size: 13px;
     color: var(--muted);
-    margin-top: 6px;
 }
 
-.file-name {
-    margin-top: 10px;
-    font-size: 13px;
-    color: var(--success);
+.thumb {
     display: none;
+    width: 100%;
+    max-height: 160px;
+    object-fit: contain;
+    border-radius: 10px;
+    pointer-events: none;
 }
 
-/* BUTTON */
+.upload-box.selected .thumb { display: block; }
+.upload-box.selected .upload-title { font-size: 13px; color: var(--success); }
+.upload-box.selected .upload-sub { display: none; }
+
 .primary-btn {
     width: 100%;
     padding: 14px;
@@ -112,15 +127,16 @@ body {
     background: var(--primary);
     color: white;
     cursor: pointer;
-    transition: 0.2s;
+    transition: background 0.2s;
 }
+
+.primary-btn:hover:not(:disabled) { background: var(--primary-dark); }
 
 .primary-btn:disabled {
     background: #a5b4fc;
     cursor: not-allowed;
 }
 
-/* LOADER */
 .spinner {
     width: 34px;
     height: 34px;
@@ -132,11 +148,19 @@ body {
     display: none;
 }
 
-@keyframes spin {
-    to { transform: rotate(360deg); }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.error-msg {
+    display: none;
+    margin-top: 14px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: #fef2f2;
+    color: var(--danger);
+    font-size: 14px;
+    text-align: center;
 }
 
-/* RESULT */
 .preview {
     display: none;
     margin-top: 20px;
@@ -146,6 +170,7 @@ body {
     width: 100%;
     border-radius: 14px;
     border: 1px solid #e5e7eb;
+    background: repeating-conic-gradient(#e5e7eb 0% 25%, #fff 0% 50%) 0 0 / 16px 16px;
 }
 
 .actions {
@@ -155,7 +180,8 @@ body {
 }
 
 .download {
-    padding: 12px 20px;
+    display: inline-block;
+    padding: 12px 28px;
     border-radius: 14px;
     background: var(--success);
     color: white;
@@ -173,20 +199,19 @@ body {
 </head>
 
 <body>
-
 <div class="app">
 
     <div class="header">
         <h1>Background Remover</h1>
-        <p>Select an image and remove its background</p>
+        <p>Select or drop an image to remove its background</p>
     </div>
 
     <div class="action-block">
         <div id="uploadBox" class="upload-box">
             <input type="file" id="fileInput" accept="image/*">
-            <div class="upload-title" id="uploadTitle">Click to upload image</div>
-            <div class="upload-sub">PNG or JPG</div>
-            <div class="file-name" id="fileName"></div>
+            <img id="thumb" class="thumb" alt="preview">
+            <div class="upload-title" id="uploadTitle">Click or drop image here</div>
+            <div class="upload-sub">PNG, JPG, WebP &mdash; max 10 MB</div>
         </div>
 
         <button id="removeBtn" class="primary-btn" disabled onclick="removeBg()">
@@ -195,77 +220,111 @@ body {
     </div>
 
     <div id="spinner" class="spinner"></div>
+    <div id="errorMsg" class="error-msg"></div>
 
     <div id="preview" class="preview">
-        <img id="output">
+        <img id="output" alt="result">
     </div>
 
     <div id="actions" class="actions">
-        <a id="downloadLink" class="download" download="background-removed.png">
-            Download PNG
-        </a>
+        <a id="downloadLink" class="download">Download PNG</a>
     </div>
 
-    <div class="footer">FastAPI · rembg</div>
+    <div class="footer">FastAPI &middot; rembg</div>
 
 </div>
 
 <script>
-const fileInput = document.getElementById("fileInput");
-const uploadBox = document.getElementById("uploadBox");
+const fileInput   = document.getElementById("fileInput");
+const uploadBox   = document.getElementById("uploadBox");
 const uploadTitle = document.getElementById("uploadTitle");
-const fileNameText = document.getElementById("fileName");
-const removeBtn = document.getElementById("removeBtn");
+const thumb       = document.getElementById("thumb");
+const removeBtn   = document.getElementById("removeBtn");
+const errorMsg    = document.getElementById("errorMsg");
+
+function setFile(file) {
+    if (!file || !file.type.startsWith("image/")) return;
+    uploadBox.classList.add("selected");
+    uploadTitle.textContent = file.name;
+    removeBtn.disabled = false;
+    hideError();
+
+    const reader = new FileReader();
+    reader.onload = e => { thumb.src = e.target.result; };
+    reader.readAsDataURL(file);
+}
 
 fileInput.addEventListener("change", () => {
-    if (fileInput.files.length) {
-        uploadBox.classList.add("selected");
-        uploadTitle.textContent = "Image selected";
-        fileNameText.textContent = fileInput.files[0].name;
-        fileNameText.style.display = "block";
-        removeBtn.disabled = false;
-    }
+    if (fileInput.files.length) setFile(fileInput.files[0]);
 });
 
+uploadBox.addEventListener("dragover", e => {
+    e.preventDefault();
+    uploadBox.classList.add("drag-over");
+});
+uploadBox.addEventListener("dragleave", () => uploadBox.classList.remove("drag-over"));
+uploadBox.addEventListener("drop", e => {
+    e.preventDefault();
+    uploadBox.classList.remove("drag-over");
+    const file = e.dataTransfer.files[0];
+    if (file) setFile(file);
+});
+
+function showError(msg) {
+    errorMsg.textContent = msg;
+    errorMsg.style.display = "block";
+}
+
+function hideError() {
+    errorMsg.style.display = "none";
+}
+
 async function removeBg() {
-    const spinner = document.getElementById("spinner");
-    const preview = document.getElementById("preview");
-    const output = document.getElementById("output");
-    const actions = document.getElementById("actions");
+    const spinner  = document.getElementById("spinner");
+    const preview  = document.getElementById("preview");
+    const output   = document.getElementById("output");
+    const actions  = document.getElementById("actions");
     const download = document.getElementById("downloadLink");
+
+    const file = fileInput.files[0];
+    if (!file) return;
 
     removeBtn.disabled = true;
     spinner.style.display = "block";
     preview.style.display = "none";
     actions.style.display = "none";
+    hideError();
 
     const formData = new FormData();
-    formData.append("file", fileInput.files[0]);
+    formData.append("file", file);
 
     try {
-        const res = await fetch("/remove-bg", {
-            method: "POST",
-            body: formData
-        });
+        const res = await fetch("/remove-bg", { method: "POST", body: formData });
 
-        if (!res.ok) throw new Error();
+        if (!res.ok) {
+            let detail = "Processing failed";
+            try { detail = (await res.json()).detail || detail; } catch {}
+            showError(detail);
+            return;
+        }
 
         const blob = await res.blob();
-        const url = URL.createObjectURL(blob);
+        const url  = URL.createObjectURL(blob);
+        const stem = file.name.replace(/\.[^.]+$/, "");
 
         output.src = url;
         preview.style.display = "block";
         download.href = url;
+        download.download = `${stem}-no-bg.png`;
         actions.style.display = "block";
 
     } catch {
-        alert("Processing failed");
+        showError("Network error — please try again.");
     } finally {
         spinner.style.display = "none";
         removeBtn.disabled = false;
     }
 }
 </script>
-
 </body>
 </html>

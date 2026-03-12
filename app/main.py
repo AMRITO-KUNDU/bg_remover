@@ -1,28 +1,41 @@
 import asyncio
-import os
 import logging
-from fastapi import FastAPI, UploadFile, File, HTTPException
+import os
+from contextlib import asynccontextmanager
+from pathlib import Path
+
+from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import Response, FileResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi.concurrency import run_in_threadpool
-from app.bg_remove import remove_background, ImageProcessingError
-from pathlib import Path
+
+from app.bg_remove import load_model, remove_background, ImageProcessingError
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 STATIC_DIR = BASE_DIR / "static"
 
-app = FastAPI(title="Simple Background Remover")
-
-app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
-
 MAX_UPLOAD_BYTES = int(os.environ.get("MAX_UPLOAD_BYTES", 10 * 1024 * 1024))
 MAX_CONCURRENT_JOBS = int(os.environ.get("MAX_CONCURRENT_JOBS", 2))
-_semaphore = asyncio.Semaphore(MAX_CONCURRENT_JOBS)
 
 logging.basicConfig(
     level=os.environ.get("LOG_LEVEL", "INFO"),
     format="%(asctime)s %(levelname)s %(name)s %(message)s",
 )
+logger = logging.getLogger(__name__)
+
+_semaphore: asyncio.Semaphore
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    global _semaphore
+    _semaphore = asyncio.Semaphore(MAX_CONCURRENT_JOBS)
+    await run_in_threadpool(load_model)
+    yield
+
+
+app = FastAPI(title="Background Remover", lifespan=lifespan)
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 
 @app.get("/health")
@@ -48,7 +61,7 @@ async def remove_bg(file: UploadFile = File(...)):
             break
         total += len(chunk)
         if total > MAX_UPLOAD_BYTES:
-            raise HTTPException(status_code=413, detail="File too large")
+            raise HTTPException(status_code=413, detail="File too large (max 10 MB)")
         chunks.append(chunk)
 
     if not chunks:
@@ -56,12 +69,20 @@ async def remove_bg(file: UploadFile = File(...)):
 
     image_bytes = b"".join(chunks)
 
+    original_stem = Path(file.filename or "image").stem
+    output_filename = f"{original_stem}-no-bg.png"
+
     try:
         async with _semaphore:
             output = await run_in_threadpool(remove_background, image_bytes)
     except ImageProcessingError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception:
+        logger.exception("Unexpected error during background removal")
         raise HTTPException(status_code=500, detail="Background removal failed")
 
-    return Response(content=output, media_type="image/png")
+    return Response(
+        content=output,
+        media_type="image/png",
+        headers={"Content-Disposition": f'attachment; filename="{output_filename}"'},
+    )
