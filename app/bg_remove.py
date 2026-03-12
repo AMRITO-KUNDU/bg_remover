@@ -2,6 +2,7 @@ import hashlib
 import io
 import logging
 import os
+import threading
 from collections import OrderedDict
 from typing import Optional
 
@@ -14,6 +15,7 @@ MAX_PIXELS = int(os.environ.get("MAX_IMAGE_PIXELS", 40_000_000))
 CACHE_MAX_ENTRIES = int(os.environ.get("RESULT_CACHE_SIZE", 20))
 
 _session = None
+_session_lock = threading.Lock()
 _cache: OrderedDict[str, bytes] = OrderedDict()
 
 
@@ -22,10 +24,22 @@ class ImageProcessingError(Exception):
 
 
 def load_model() -> None:
+    _get_session()
+
+
+def _get_session():
     global _session
-    logger.info("Loading rembg model (u2net)…")
-    _session = new_session("u2net")
-    logger.info("rembg model ready.")
+    if _session is not None:
+        return _session
+
+    with _session_lock:
+        if _session is not None:
+            return _session
+
+        logger.info("Loading rembg model (u2net)...")
+        _session = new_session("u2net")
+        logger.info("rembg model ready.")
+        return _session
 
 
 def _cache_get(key: str) -> Optional[bytes]:
@@ -60,7 +74,7 @@ def remove_background(image_bytes: bytes) -> bytes:
     except Image.DecompressionBombError:
         raise ImageProcessingError("Uploaded image is too large to process safely")
 
-    result = remove(image, session=_session)
+    result = remove(image, session=_get_session())
 
     buffer = io.BytesIO()
     result.save(buffer, format="PNG")

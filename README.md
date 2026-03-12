@@ -4,7 +4,7 @@ emoji: 🖼️
 colorFrom: indigo
 colorTo: purple
 sdk: docker
-sdk_version: "latest"
+app_port: 7860
 pinned: false
 ---
 
@@ -26,7 +26,7 @@ A small web app to remove image backgrounds using FastAPI and rembg.
 - `MAX_IMAGE_PIXELS` (default: 40000000) maximum total pixels allowed
 - `MAX_CONCURRENT_JOBS` (default: 2) concurrent background removal jobs
 - `HOST` (default: 127.0.0.1) bind address
-- `PORT` (default: 8000) bind port
+- `PORT` (default: 7860) bind port
 - `LOG_LEVEL` (default: INFO) logging level
 
 
@@ -34,7 +34,7 @@ A small web app to remove image backgrounds using FastAPI and rembg.
 Build and run:
 ```bash
 docker build -t bg-remover .
-docker run -p 8000:8000 bg-remover
+docker run -p 7860:7860 bg-remover
 ```
 
 ## Installation
@@ -42,3 +42,27 @@ docker run -p 8000:8000 bg-remover
    ```bash
    git clone <repo_url>
    cd bg_remover
+   ```
+
+2. Create a virtualenv and install deps:
+   ```bash
+   python -m venv .venv
+   .venv\\Scripts\\activate
+   pip install -r requirements.txt
+   ```
+
+3. Run locally:
+   ```bash
+   python run.py
+   ```
+
+   Dev reload:
+   ```bash
+   # PowerShell
+   $env:RELOAD=1
+   python run.py
+
+   # CMD
+   set RELOAD=1
+   python run.py
+   ```

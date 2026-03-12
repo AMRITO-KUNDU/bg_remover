@@ -30,8 +30,9 @@ _semaphore: asyncio.Semaphore
 async def lifespan(app: FastAPI):
     global _semaphore
     _semaphore = asyncio.Semaphore(MAX_CONCURRENT_JOBS)
-    await run_in_threadpool(load_model)
+    warmup_task = asyncio.create_task(run_in_threadpool(load_model))
     yield
+    warmup_task.cancel()
 
 
 app = FastAPI(title="Background Remover", lifespan=lifespan)
