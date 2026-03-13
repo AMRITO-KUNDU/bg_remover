@@ -1,5 +1,10 @@
 """
-Background removal using rembg with BiRefNet (state-of-the-art model).
+Background removal using rembg with IS-Net (isnet-general-use).
+
+IS-Net (Highly Accurate Dichotomous Image Segmentation, ECCV 2022) is a
+~176 MB model — the same size class as u2net but a major quality leap.
+It was purpose-built for precise subject/background separation and produces
+sharper masks especially on hair, transparent edges, and fine details.
 
 Pipeline:
   1. Open & validate image with Pillow
@@ -26,7 +31,7 @@ from rembg import new_session, remove
 logger = logging.getLogger(__name__)
 
 # ── Tunables (all overridable via environment variables) ──────────────────────
-MODEL_NAME       = os.environ.get("REMBG_MODEL",        "birefnet-general")
+MODEL_NAME       = os.environ.get("REMBG_MODEL",        "isnet-general-use")
 MAX_PIXELS       = int(os.environ.get("MAX_IMAGE_PIXELS", 40_000_000))
 MAX_PROCESS_PX   = int(os.environ.get("MAX_PROCESS_PX",  1_500))   # longest side
 ALPHA_MATTING    = os.environ.get("ALPHA_MATTING", "true").lower() == "true"
