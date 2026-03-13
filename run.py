@@ -1,14 +1,10 @@
-import os
 import uvicorn
 
 if __name__ == "__main__":
-    host = os.environ.get("HOST", "127.0.0.1")
-    port = int(os.environ.get("PORT", 7860))
-    reload = os.environ.get("RELOAD", "").lower() in {"1", "true", "yes", "on"}
-    print(f"Starting server on http://{host}:{port}")
+    print("Starting server on http://0.0.0.0:5000")
     uvicorn.run(
         "app.main:app",
-        host=host,
-        port=port,
-        reload=reload
+        host="0.0.0.0",
+        port=5000,
+        reload=True
     )

@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>ClearCut — Background Remover</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/static/favicon.ico">
 <style>
 :root {
     --primary: #4f46e5;
@@ -14,9 +15,9 @@
     --bg: #f8fafc;
     --card: #ffffff;
     --text: #0f172a;
+    --sub: #334155;
     --muted: #64748b;
     --border: #e2e8f0;
-    --nav-h: 56px;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -30,30 +31,29 @@ body {
     flex-direction: column;
 }
 
-/* ── Nav ── */
+/* ─── Navbar ─── */
 nav {
-    height: var(--nav-h);
+    height: 58px;
     background: var(--card);
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
-    padding: 0 24px;
+    justify-content: space-between;
+    padding: 0 32px;
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 20;
 }
 
-.nav-brand {
+.nav-left {
     display: flex;
     align-items: center;
-    gap: 9px;
-    text-decoration: none;
-    color: var(--text);
+    gap: 10px;
 }
 
 .nav-logo {
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     background: var(--primary);
     border-radius: 8px;
     display: flex;
@@ -62,167 +62,156 @@ nav {
     flex-shrink: 0;
 }
 
-.nav-logo svg { display: block; }
-
 .nav-name {
     font-size: 16px;
     font-weight: 700;
     letter-spacing: -0.3px;
+    color: var(--text);
 }
 
-.nav-badge {
-    margin-left: 8px;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--primary);
-    background: #eef2ff;
-    padding: 2px 8px;
-    border-radius: 99px;
-    letter-spacing: 0.2px;
+.nav-right {
+    font-size: 13px;
+    color: var(--muted);
 }
 
-/* ── Main layout ── */
+/* ─── Page ─── */
 main {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 48px 16px 64px;
-    gap: 40px;
 }
 
-/* ── Hero ── */
+/* ─── Hero ─── */
 .hero {
-    text-align: center;
-    max-width: 480px;
-}
-
-.hero h1 {
-    font-size: 32px;
-    font-weight: 800;
-    letter-spacing: -0.6px;
-    line-height: 1.15;
-    color: var(--text);
-}
-
-.hero h1 span {
-    color: var(--primary);
-}
-
-.hero p {
-    margin-top: 12px;
-    font-size: 15px;
-    color: var(--muted);
-    line-height: 1.6;
-}
-
-/* ── Tool card ── */
-.card {
     width: 100%;
-    max-width: 480px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 28px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.06);
-}
-
-.card-label {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.6px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 14px;
-}
-
-/* ── Upload ── */
-.upload-box {
-    position: relative;
-    border: 1.5px dashed #cbd5e1;
-    border-radius: 12px;
-    padding: 32px 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: border-color 0.18s, background 0.18s;
+    padding: 64px 24px 56px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    background: #fafbfc;
+    gap: 36px;
+    border-bottom: 1px solid var(--border);
+    background: var(--card);
 }
 
-.upload-box:hover {
-    border-color: var(--primary);
-    background: #f5f3ff;
+.hero-text {
+    text-align: center;
+    max-width: 560px;
 }
 
-.upload-box.drag-over {
-    border-color: var(--primary);
-    background: #ede9fe;
+.hero-text h1 {
+    font-size: 40px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    color: var(--text);
 }
 
-.upload-box.selected {
-    border-color: var(--success);
-    background: #f0fdf4;
-    padding: 14px;
+.hero-text h1 em {
+    font-style: normal;
+    color: var(--primary);
 }
 
-.upload-box input {
+.hero-text p {
+    margin-top: 14px;
+    font-size: 16px;
+    color: var(--sub);
+    line-height: 1.65;
+    max-width: 440px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ─── Tool ─── */
+.tool {
+    width: 100%;
+    max-width: 580px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.07);
+}
+
+/* upload zone */
+.upload-zone {
+    position: relative;
+    padding: 48px 32px;
+    text-align: center;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.18s;
+    background: #fafbff;
+}
+
+.upload-zone:hover { background: #f5f3ff; }
+.upload-zone.drag-over { background: #ede9fe; }
+.upload-zone.selected { background: #f0fdf4; border-bottom-color: #bbf7d0; padding: 16px 24px; }
+
+.upload-zone input {
     position: absolute;
     inset: 0;
     opacity: 0;
     cursor: pointer;
 }
 
-.upload-icon-wrap {
-    width: 44px;
-    height: 44px;
-    border-radius: 10px;
+.upload-icon-box {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
     background: #e0e7ff;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--primary);
+    margin-bottom: 4px;
 }
 
-.upload-title {
-    font-size: 14px;
+.upload-zone.selected .upload-icon-box { display: none; }
+
+.upload-label {
+    font-size: 15px;
     font-weight: 600;
     color: var(--text);
 }
 
-.upload-sub {
-    font-size: 12px;
+.upload-hint {
+    font-size: 13px;
     color: var(--muted);
 }
 
 .thumb {
     display: none;
-    width: 100%;
-    max-height: 180px;
+    max-width: 100%;
+    max-height: 200px;
     object-fit: contain;
-    border-radius: 8px;
+    border-radius: 10px;
     pointer-events: none;
 }
 
-.upload-box.selected .thumb           { display: block; }
-.upload-box.selected .upload-icon-wrap { display: none; }
-.upload-box.selected .upload-title    { font-size: 12px; color: var(--success); }
-.upload-box.selected .upload-sub      { display: none; }
+.upload-zone.selected .thumb        { display: block; }
+.upload-zone.selected .upload-label { font-size: 13px; color: var(--success); }
+.upload-zone.selected .upload-hint  { display: none; }
 
-/* ── Divider ── */
-.divider {
-    height: 1px;
-    background: var(--border);
-    margin: 20px 0;
+/* action bar */
+.action-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background: var(--card);
 }
 
-/* ── Button ── */
 .primary-btn {
-    width: 100%;
-    padding: 13px;
+    flex: 1;
+    padding: 12px 20px;
     font-size: 15px;
     font-weight: 600;
     border-radius: 10px;
@@ -230,60 +219,64 @@ main {
     background: var(--primary);
     color: white;
     cursor: pointer;
-    transition: background 0.18s, transform 0.12s;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
+    transition: background 0.18s, transform 0.12s;
 }
 
 .primary-btn:hover:not(:disabled)  { background: var(--primary-dark); transform: translateY(-1px); }
 .primary-btn:active:not(:disabled) { transform: translateY(0); }
 .primary-btn:disabled              { background: #c7d2fe; cursor: not-allowed; }
 
-/* ── Spinner ── */
+/* ─── Status / output ─── */
+.output-area {
+    border-top: 1px solid var(--border);
+    padding: 20px;
+    display: none;
+}
+
+.output-area.visible { display: block; }
+
 .spinner {
-    width: 30px;
-    height: 30px;
-    margin: 22px auto;
+    width: 28px;
+    height: 28px;
+    margin: 0 auto;
     border: 2px solid #e2e8f0;
-    border-top: 2px solid var(--primary);
+    border-top-color: var(--primary);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
-    display: none;
 }
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── Error ── */
-.error-msg {
-    display: none;
-    margin-top: 14px;
+.error-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
     padding: 11px 14px;
     border-radius: 8px;
     background: #fef2f2;
     border: 1px solid #fecaca;
     color: var(--danger);
     font-size: 13px;
-    display: none;
-    align-items: center;
-    gap: 8px;
 }
 
-/* ── Result ── */
-.preview { display: none; margin-top: 16px; }
-
-.preview img {
+.result-img {
     width: 100%;
     border-radius: 10px;
     border: 1px solid var(--border);
     background: repeating-conic-gradient(#e2e8f0 0% 25%, #fff 0% 50%) 0 0 / 14px 14px;
+    display: block;
 }
 
-.actions { display: none; margin-top: 12px; }
-
 .download-btn {
-    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 12px;
     padding: 12px;
     border-radius: 10px;
     background: var(--success);
@@ -292,66 +285,121 @@ main {
     font-size: 14px;
     font-weight: 600;
     transition: background 0.18s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
 }
 
 .download-btn:hover { background: var(--success-dark); }
 
-/* ── Features ── */
-.features {
+/* ─── Use-cases section ─── */
+.use-cases {
     width: 100%;
-    max-width: 480px;
+    max-width: 840px;
+    padding: 64px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 36px;
+}
+
+.section-header {
+    text-align: center;
+}
+
+.section-header h2 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    color: var(--text);
+}
+
+.section-header p {
+    margin-top: 8px;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.cards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+    gap: 16px;
+    width: 100%;
 }
 
-.feat {
+.uc-card {
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px 14px;
+    border-radius: 14px;
+    padding: 24px 20px;
 }
 
-.feat-icon-wrap {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
+.uc-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 10px;
+    margin-bottom: 14px;
 }
 
-.feat-icon-wrap.indigo { background: #e0e7ff; color: #4f46e5; }
-.feat-icon-wrap.amber  { background: #fef3c7; color: #d97706; }
-.feat-icon-wrap.green  { background: #dcfce7; color: #16a34a; }
+.uc-icon.violet { background: #ede9fe; color: #7c3aed; }
+.uc-icon.blue   { background: #dbeafe; color: #1d4ed8; }
+.uc-icon.rose   { background: #ffe4e6; color: #e11d48; }
 
-.feat-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-.feat-desc  { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.uc-card h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+}
 
-/* ── Footer ── */
+.uc-card p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.55;
+}
+
+/* ─── Footer ─── */
 footer {
     border-top: 1px solid var(--border);
-    padding: 18px 24px;
-    text-align: center;
-    font-size: 12px;
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
     color: var(--muted);
     background: var(--card);
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
-footer a { color: var(--muted); text-decoration: none; }
-footer a:hover { color: var(--text); }
+footer .footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.footer-brand .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--primary);
+}
+
+@media (max-width: 600px) {
+    .hero-text h1 { font-size: 28px; }
+    .cards { grid-template-columns: 1fr; }
+    nav { padding: 0 16px; }
+    footer { justify-content: center; text-align: center; }
+}
 </style>
 </head>
 <body>
 
-<!-- Nav -->
+<!-- Navbar -->
 <nav>
-    <a class="nav-brand" href="/">
+    <div class="nav-left">
         <div class="nav-logo">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/>
@@ -361,165 +409,155 @@ footer a:hover { color: var(--text); }
             </svg>
         </div>
         <span class="nav-name">ClearCut</span>
-    </a>
-    <span class="nav-badge">Free Tool</span>
+    </div>
+    <div class="nav-right">Free &amp; no sign-up required</div>
 </nav>
 
-<!-- Main -->
 <main>
 
     <!-- Hero -->
-    <div class="hero">
-        <h1>Remove backgrounds<br><span>in one click</span></h1>
-        <p>Upload any image and our AI instantly cuts out the background — no sign-up, no limits, completely free.</p>
-    </div>
+    <section class="hero">
+        <div class="hero-text">
+            <h1>Remove any background,<br><em>instantly.</em></h1>
+            <p>Drop your image below and get a clean, transparent PNG in seconds — no account needed.</p>
+        </div>
 
-    <!-- Tool card -->
-    <div class="card">
-        <div class="card-label">Upload Image</div>
+        <!-- Tool -->
+        <div class="tool">
 
-        <div id="uploadBox" class="upload-box">
-            <input type="file" id="fileInput" accept="image/*">
-            <div class="upload-icon-wrap">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/>
-                    <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
-                </svg>
+            <div id="uploadZone" class="upload-zone">
+                <input type="file" id="fileInput" accept="image/*">
+                <div class="upload-icon-box">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="16 16 12 12 8 16"/>
+                        <line x1="12" y1="12" x2="12" y2="21"/>
+                        <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
+                    </svg>
+                </div>
+                <img id="thumb" class="thumb" alt="preview">
+                <div class="upload-label" id="uploadLabel">Click to upload or drag &amp; drop</div>
+                <div class="upload-hint">PNG, JPG, WebP — up to 10 MB</div>
             </div>
-            <img id="thumb" class="thumb" alt="preview">
-            <div class="upload-title" id="uploadTitle">Click to upload or drag and drop</div>
-            <div class="upload-sub">PNG, JPG, WebP — up to 10 MB</div>
-        </div>
 
-        <div class="divider"></div>
-
-        <button id="removeBtn" class="primary-btn" disabled onclick="removeBg()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/>
-                <line x1="20" y1="4" x2="8.12" y2="15.88"/>
-                <line x1="14.47" y1="14.48" x2="20" y2="20"/>
-                <line x1="8.12" y1="8.12" x2="12" y2="12"/>
-            </svg>
-            Remove Background
-        </button>
-
-        <div id="spinner" class="spinner"></div>
-        <div id="errorMsg" class="error-msg">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-            </svg>
-            <span id="errorText"></span>
-        </div>
-
-        <div id="preview" class="preview">
-            <img id="output" alt="Result">
-        </div>
-
-        <div id="actions" class="actions">
-            <a id="downloadLink" class="download-btn">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-                Download PNG
-            </a>
-        </div>
-    </div>
-
-    <!-- Features -->
-    <div class="features">
-        <div class="feat">
-            <div class="feat-icon-wrap indigo">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 2a5 5 0 0 1 5 5c0 2.76-2.24 5-5 5S7 9.76 7 7a5 5 0 0 1 5-5z"/>
-                    <path d="M12 14c-5 0-8 2.5-8 4v1h16v-1c0-1.5-3-4-8-4z"/>
-                </svg>
+            <div class="action-bar">
+                <button id="removeBtn" class="primary-btn" disabled onclick="removeBg()">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/>
+                        <line x1="20" y1="4" x2="8.12" y2="15.88"/>
+                        <line x1="14.47" y1="14.48" x2="20" y2="20"/>
+                        <line x1="8.12" y1="8.12" x2="12" y2="12"/>
+                    </svg>
+                    Remove Background
+                </button>
             </div>
-            <div class="feat-title">AI Powered</div>
-            <div class="feat-desc">U2Net neural network trained on millions of images</div>
-        </div>
-        <div class="feat">
-            <div class="feat-icon-wrap amber">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-                </svg>
+
+            <div id="outputArea" class="output-area">
+                <!-- filled by JS -->
             </div>
-            <div class="feat-title">Instant Cache</div>
-            <div class="feat-desc">Repeated images are returned instantly, no reprocessing</div>
+
         </div>
-        <div class="feat">
-            <div class="feat-icon-wrap green">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                </svg>
+    </section>
+
+    <!-- Use cases -->
+    <section class="use-cases">
+        <div class="section-header">
+            <h2>What you can do with it</h2>
+            <p>ClearCut works great for a wide range of everyday tasks.</p>
+        </div>
+
+        <div class="cards">
+            <div class="uc-card">
+                <div class="uc-icon violet">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                        <line x1="3" y1="6" x2="21" y2="6"/>
+                        <path d="M16 10a4 4 0 0 1-8 0"/>
+                    </svg>
+                </div>
+                <h3>Product Photos</h3>
+                <p>Get a clean white or transparent background for any product — ready for your online store or marketplace listing.</p>
             </div>
-            <div class="feat-title">Private</div>
-            <div class="feat-desc">Images are never written to disk or sent to third parties</div>
+
+            <div class="uc-card">
+                <div class="uc-icon blue">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </div>
+                <h3>Profile Pictures</h3>
+                <p>Cut out your portrait cleanly and place it on any background — great for LinkedIn, ID cards, and avatars.</p>
+            </div>
+
+            <div class="uc-card">
+                <div class="uc-icon rose">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+                        <polyline points="21 15 16 10 5 21"/>
+                    </svg>
+                </div>
+                <h3>Design &amp; Presentations</h3>
+                <p>Extract any subject from a photo and drop it into your slides, posters, banners, or social media graphics.</p>
+            </div>
         </div>
-    </div>
+    </section>
 
 </main>
 
 <!-- Footer -->
 <footer>
-    &copy; 2026 ClearCut &mdash; Built with FastAPI &amp; rembg
+    <div class="footer-brand">
+        <div class="dot"></div>
+        ClearCut
+    </div>
+    <span>Powered by FastAPI &amp; rembg &mdash; runs entirely on-server, no data retained</span>
 </footer>
 
 <script>
-const fileInput   = document.getElementById("fileInput");
-const uploadBox   = document.getElementById("uploadBox");
-const uploadTitle = document.getElementById("uploadTitle");
-const thumb       = document.getElementById("thumb");
-const removeBtn   = document.getElementById("removeBtn");
-const errorMsg    = document.getElementById("errorMsg");
-const errorText   = document.getElementById("errorText");
+const fileInput  = document.getElementById("fileInput");
+const uploadZone = document.getElementById("uploadZone");
+const uploadLabel= document.getElementById("uploadLabel");
+const thumb      = document.getElementById("thumb");
+const removeBtn  = document.getElementById("removeBtn");
+const outputArea = document.getElementById("outputArea");
 
 function setFile(file) {
     if (!file || !file.type.startsWith("image/")) return;
-    uploadBox.classList.add("selected");
-    uploadTitle.textContent = file.name;
+    uploadZone.classList.add("selected");
+    uploadLabel.textContent = file.name;
     removeBtn.disabled = false;
-    hideError();
+    clearOutput();
     const reader = new FileReader();
     reader.onload = e => { thumb.src = e.target.result; };
     reader.readAsDataURL(file);
 }
 
-fileInput.addEventListener("change", () => {
-    if (fileInput.files.length) setFile(fileInput.files[0]);
-});
-
-uploadBox.addEventListener("dragover", e => { e.preventDefault(); uploadBox.classList.add("drag-over"); });
-uploadBox.addEventListener("dragleave", () => uploadBox.classList.remove("drag-over"));
-uploadBox.addEventListener("drop", e => {
+fileInput.addEventListener("change", () => { if (fileInput.files.length) setFile(fileInput.files[0]); });
+uploadZone.addEventListener("dragover", e => { e.preventDefault(); uploadZone.classList.add("drag-over"); });
+uploadZone.addEventListener("dragleave", () => uploadZone.classList.remove("drag-over"));
+uploadZone.addEventListener("drop", e => {
     e.preventDefault();
-    uploadBox.classList.remove("drag-over");
+    uploadZone.classList.remove("drag-over");
     const file = e.dataTransfer.files[0];
     if (file) setFile(file);
 });
 
-function showError(msg) {
-    errorText.textContent = msg;
-    errorMsg.style.display = "flex";
+function showOutput(html) {
+    outputArea.innerHTML = html;
+    outputArea.classList.add("visible");
 }
 
-function hideError() { errorMsg.style.display = "none"; }
+function clearOutput() {
+    outputArea.innerHTML = "";
+    outputArea.classList.remove("visible");
+}
 
 async function removeBg() {
-    const spinner  = document.getElementById("spinner");
-    const preview  = document.getElementById("preview");
-    const output   = document.getElementById("output");
-    const actions  = document.getElementById("actions");
-    const download = document.getElementById("downloadLink");
-
     const file = fileInput.files[0];
     if (!file) return;
 
     removeBtn.disabled = true;
-    spinner.style.display = "block";
-    preview.style.display = "none";
-    actions.style.display = "none";
-    hideError();
+    showOutput('<div class="spinner"></div>');
 
     const formData = new FormData();
     formData.append("file", file);
@@ -528,9 +566,15 @@ async function removeBg() {
         const res = await fetch("/remove-bg", { method: "POST", body: formData });
 
         if (!res.ok) {
-            let detail = "Processing failed";
+            let detail = "Processing failed — please try again.";
             try { detail = (await res.json()).detail || detail; } catch {}
-            showError(detail);
+            showOutput(`
+                <div class="error-row">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px">
+                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                    <span>${detail}</span>
+                </div>`);
             return;
         }
 
@@ -538,16 +582,26 @@ async function removeBg() {
         const url  = URL.createObjectURL(blob);
         const stem = file.name.replace(/\.[^.]+$/, "");
 
-        output.src = url;
-        preview.style.display = "block";
-        download.href = url;
-        download.download = `${stem}-no-bg.png`;
-        actions.style.display = "block";
+        showOutput(`
+            <img class="result-img" src="${url}" alt="Result">
+            <a class="download-btn" href="${url}" download="${stem}-no-bg.png">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Download PNG
+            </a>`);
 
     } catch {
-        showError("Network error — please try again.");
+        showOutput(`
+            <div class="error-row">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px">
+                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                <span>Network error — please try again.</span>
+            </div>`);
     } finally {
-        spinner.style.display = "none";
         removeBtn.disabled = false;
     }
 }
